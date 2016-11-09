@@ -5,16 +5,21 @@
  *      Author: Mateusz
  */
 
+/*
 #include <iostream>
-//#include "wire_sensors.h"
+#include "wire_sensors.h"
 
 
+*/
+
+/*
 int main() {
 
-  /*  telemetry_server s;
+    telemetry_server s;
 
-    s.run(docroot, port);*/
+    s.run("", 66100);
 
 }
+*/
 
 

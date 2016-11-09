@@ -103,9 +103,9 @@ public:
         // Broadcast count to all connections
         con_list::iterator it;
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-          //  m_endpoint.send(*it,val.str(),websocketpp::frame::opcode::text);
+            m_endpoint.send(*it,std::to_string(m_count),websocketpp::frame::opcode::text);
         }
-
+        m_count++;
         // set timer for next telemetry check
         set_timer();
     }
@@ -129,4 +129,14 @@ private:
     // Telemetry data
     uint64_t m_count;
 };
+
+
+int main() {
+
+    telemetry_server s;
+
+    s.run("", 60100);
+
+}
+
 
