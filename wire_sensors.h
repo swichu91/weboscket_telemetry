@@ -13,13 +13,21 @@
 #include <vector>
 
 struct SensorData{
+public:
 	int nr;
 	std::string path;
 	std::string id;
 	std::string temp_str;
 	float	temp;
 
-	//SensorData(){};
+	SensorData(int _nr,std::string _path,std::string _id,std::string _temp_str=0,float _temp=0){
+	    nr = _nr;
+	    path = _path;
+	    id = _id;
+	    temp_str = _temp_str;
+	    temp = _temp;
+	};
+	SensorData() : nr(0),temp(0){};
 };
 
 typedef std::vector<SensorData> sensors_matrix;
