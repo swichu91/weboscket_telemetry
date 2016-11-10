@@ -5,7 +5,7 @@
  *      Author: Mateusz
  */
 
-
+#include "telemetry_server.h"
 #include <websocketpp/config/asio_no_tls.hpp>
 
 #include <websocketpp/server.hpp>
@@ -15,6 +15,8 @@
 #include <set>
 #include <streambuf>
 #include <string>
+#include <sstream>
+
 
 /**
  * The telemetry server accepts connections and sends a message every second to
@@ -36,12 +38,8 @@
  * cases you are much better off proxying to a real HTTP server for the http
  * requests.
  */
-class telemetry_server {
-public:
-    typedef websocketpp::connection_hdl connection_hdl;
-    typedef websocketpp::server<websocketpp::config::asio> server;
 
-    telemetry_server() : m_count(0) {
+    TelemetryServer::TelemetryServer() : m_count(0) {
         // set up access channels to only log interesting things
         m_endpoint.clear_access_channels(websocketpp::log::alevel::all);
         m_endpoint.set_access_channels(websocketpp::log::alevel::access_core);
@@ -53,11 +51,11 @@ public:
         // Bind the handlers we are using
         using websocketpp::lib::placeholders::_1;
         using websocketpp::lib::bind;
-        m_endpoint.set_open_handler(bind(&telemetry_server::on_open,this,_1));
-        m_endpoint.set_close_handler(bind(&telemetry_server::on_close,this,_1));
+        m_endpoint.set_open_handler(bind(&TelemetryServer::on_open,this,_1));
+        m_endpoint.set_close_handler(bind(&TelemetryServer::on_close,this,_1));
     }
 
-    void run(std::string docroot, uint16_t port) {
+    void TelemetryServer::run(std::string docroot, uint16_t port) {
         std::stringstream ss;
         ss << "Running telemetry server on port "<< port <<" using docroot=" << docroot;
         m_endpoint.get_alog().write(websocketpp::log::alevel::app,ss.str());
@@ -81,18 +79,18 @@ public:
         }
     }
 
-    void set_timer() {
+    void TelemetryServer::set_timer() {
         m_timer = m_endpoint.set_timer(
             1000,
             websocketpp::lib::bind(
-                &telemetry_server::on_timer,
+                &TelemetryServer::on_timer,
                 this,
                 websocketpp::lib::placeholders::_1
             )
         );
     }
 
-    void on_timer(websocketpp::lib::error_code const & ec) {
+    void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
         if (ec) {
             // there was an error, stop telemetry
             m_endpoint.get_alog().write(websocketpp::log::alevel::app,
@@ -103,33 +101,16 @@ public:
         // Broadcast count to all connections
         con_list::iterator it;
         for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-            m_endpoint.send(*it,std::to_string(m_count),websocketpp::frame::opcode::text);
+            /* I could use to_string here but sadly mingw has problems with it.. */
+            std::stringstream ss;
+            ss << m_count;
+            m_endpoint.send(*it,ss.str(),websocketpp::frame::opcode::text);
         }
         m_count++;
         // set timer for next telemetry check
         set_timer();
     }
-
-    void on_open(connection_hdl hdl) {
-        m_connections.insert(hdl);
-    }
-
-    void on_close(connection_hdl hdl) {
-        m_connections.erase(hdl);
-    }
-private:
-    typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
-
-    server m_endpoint;
-    con_list m_connections;
-    server::timer_ptr m_timer;
-
-    std::string m_docroot;
-
-    // Telemetry data
-    uint64_t m_count;
-};
-
+/*
 
 int main() {
 
@@ -139,4 +120,5 @@ int main() {
 
 }
 
+*/
 
