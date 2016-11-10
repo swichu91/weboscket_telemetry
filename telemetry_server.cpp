@@ -118,6 +118,7 @@ void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
 
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
+
     std::stringstream ss;
     ss << "Echo from: " << hdl.lock().get() << "-> "<< msg->get_payload();
     // Broadcast echo response to all connections

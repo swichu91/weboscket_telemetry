@@ -48,6 +48,7 @@
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="boost_system-mgw53-mt-1_61"/>
 									<listOptionValue builtIn="false" value="Ws2_32"/>
 									<listOptionValue builtIn="false" value="mswsock"/>
+									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="boost_thread-mgw53-mt-1_61"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.435539417" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;E:\PROGRAMOWANIE\OPROGRAMOWANIE\boost_1_61_0\stage\lib&quot;"/>

@@ -10,7 +10,7 @@
 
 
 #include <websocketpp/config/asio_no_tls.hpp>
-
+#include <boost/thread.hpp>
 #include <websocketpp/server.hpp>
 
 #include <fstream>
@@ -78,6 +78,14 @@ private:
 
     // Telemetry data
     uint64_t m_count;
+
+    /* Passes messages to websocket server from external clients(producers) */
+    boost::thread inputdata_thread;
+    boost::mutex inputdata_mutex;
+
+    /* Passes messages from websocket to external clients(producers) */
+    boost::thread outputdata_thread;
+    boost::mutex outputdata_mutex;
 };
 
 

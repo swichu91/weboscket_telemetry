@@ -7,6 +7,7 @@
 
 
 #include <iostream>
+#include <boost/bind.hpp>
 #include "wire_sensors.h"
 #include "telemetry_server.h"
 /* For getopt */
@@ -46,6 +47,7 @@ int main(int argc, char** argv) {
     boost::thread_group worker_threads;
 
     TelemetryServer s;
+
     s.run("", port_nr);
 
 
