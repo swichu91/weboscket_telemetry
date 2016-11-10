@@ -46,6 +46,8 @@ class TelemetryServer {
 public:
     typedef websocketpp::connection_hdl connection_hdl;
     typedef websocketpp::server<websocketpp::config::asio> server;
+    // pull out the type of messages sent by our config
+    typedef server::message_ptr message_ptr;
 
     TelemetryServer();
 
@@ -62,6 +64,9 @@ public:
     void on_close(connection_hdl hdl) {
         m_connections.erase(hdl);
     }
+
+    void on_message(connection_hdl hdl, message_ptr msg);
+
 private:
     typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
 
