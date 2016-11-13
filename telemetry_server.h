@@ -10,7 +10,7 @@
 
 
 #include <websocketpp/config/asio_no_tls.hpp>
-#include <boost/thread.hpp>
+
 #include <websocketpp/server.hpp>
 
 #include <fstream>
@@ -20,6 +20,11 @@
 #include <string>
 #include <sstream>
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/scoped_thread.hpp>
+#include <boost/thread.hpp>
+#include <boost/lockfree/queue.hpp>
+#include "msg_queue.h"
 
 /**
  * The telemetry server accepts connections and sends a message every second to
@@ -42,14 +47,19 @@
  * requests.
  */
 
+/* Friends functions don't have access to typedefs inside class */
+typedef websocketpp::connection_hdl connection_hdl;
+typedef websocketpp::server<websocketpp::config::asio> server;
+// pull out the type of messages sent by our config
+typedef server::message_ptr message_ptr;
+typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
+
 class TelemetryServer {
 public:
-    typedef websocketpp::connection_hdl connection_hdl;
-    typedef websocketpp::server<websocketpp::config::asio> server;
-    // pull out the type of messages sent by our config
-    typedef server::message_ptr message_ptr;
+
 
     TelemetryServer();
+    ~TelemetryServer();
 
     void run(std::string docroot, uint16_t port);
 
@@ -67,8 +77,11 @@ public:
 
     void on_message(connection_hdl hdl, message_ptr msg);
 
+    friend void outputdata_worker(TelemetryServer* inst);
+    friend void inputdata_worker(TelemetryServer* inst);
+
 private:
-    typedef std::set<connection_hdl,std::owner_less<connection_hdl>> con_list;
+
 
     server m_endpoint;
     con_list m_connections;
@@ -79,13 +92,8 @@ private:
     // Telemetry data
     uint64_t m_count;
 
-    /* Passes messages to websocket server from external clients(producers) */
-    boost::thread inputdata_thread;
-    boost::mutex inputdata_mutex;
-
-    /* Passes messages from websocket to external clients(producers) */
-    boost::thread outputdata_thread;
-    boost::mutex outputdata_mutex;
+    MsgQueue<std::string> output_queue;
+    MsgQueue<std::string> input_queue;
 };
 
 

@@ -39,6 +39,32 @@
 * requests.
 */
 
+
+void outputdata_worker(TelemetryServer* inst){
+	while(1){
+		boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+
+		con_list::iterator it;
+		for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
+
+			inst->m_endpoint.send(*it,"worker1test",websocketpp::frame::opcode::text);
+		}
+	}
+}
+
+void inputdata_worker(TelemetryServer* inst){
+	while(1){
+		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
+
+		con_list::iterator it;
+
+		for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
+
+			inst->m_endpoint.send(*it,"worker2test",websocketpp::frame::opcode::text);
+		}
+	}
+}
+
 TelemetryServer::TelemetryServer() : m_count(0) {
     // set up access channels to only log interesting things
     m_endpoint.clear_access_channels(websocketpp::log::alevel::all);
@@ -58,6 +84,13 @@ TelemetryServer::TelemetryServer() : m_count(0) {
     m_endpoint.set_message_handler(bind(&TelemetryServer::on_message,this,_1,_2));
 }
 
+TelemetryServer::~TelemetryServer()
+{
+	//outputdata_thread.join();
+	//inputdata_thread.join();
+}
+
+
 void TelemetryServer::run(std::string docroot, uint16_t port) {
     std::stringstream ss;
     ss << "Running telemetry server on port "<< port <<" using docroot=" << docroot;
@@ -73,6 +106,16 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
 
     // Set the initial timer to start telemetry
     set_timer();
+
+    /* Spam two threads
+     * Use of scoped threads eliminates need for calling join inside class destructor
+     */
+
+    /* Pass messages from websocket to external clients(producers) */
+    boost::scoped_thread<> outputdata_thread{boost::thread{outputdata_worker,this}};
+
+    /* Pass messages to websocket server from external clients(producers) */
+    boost::scoped_thread<> inputdata_thread{boost::thread{inputdata_worker,this}};
 
     // Start the ASIO io_service run loop
     try {
