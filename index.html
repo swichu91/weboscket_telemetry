@@ -38,7 +38,7 @@ function connect() {
 	};
 	
 	ws.onmessage = function(e) {
-		document.getElementById("messages").innerHTML += "Server: "+e.data+"<br />";
+		document.getElementById("output_view_id").value = e.data;
 	};
 }
 
@@ -85,6 +85,11 @@ body,html {
 	<button id="send_msg" onclick="send_msg();">SendMsg</button>
 	</div>
 </div>
+
+<div id="outputview">
+<input type="text" name="output_view" id="output_view_id" value=""/><br />
+</div>
+
 <div id="messages"></div>
 
 </body>

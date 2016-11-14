@@ -56,24 +56,13 @@ void inputdata_worker(TelemetryServer* inst){
 	while(1){
 		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
-		static int count = 0;
+		/* Only for test purposes */
+		std::cout << inst->input_queue.rd();
 
-		std::stringstream ss;
-		ss << count++;
-		std::string data = "test" + ss.str();
-
-		inst->output_queue.wr(data);
-
-/*		con_list::iterator it;
-
-		for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
-
-			inst->m_endpoint.send(*it,"worker2test",websocketpp::frame::opcode::text);
-		}*/
 	}
 }
 
-TelemetryServer::TelemetryServer() : m_count(0) {
+TelemetryServer::TelemetryServer(){
     // set up access channels to only log interesting things
     m_endpoint.clear_access_channels(websocketpp::log::alevel::all);
     m_endpoint.set_access_channels(websocketpp::log::alevel::access_core);
@@ -103,8 +92,6 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
     std::stringstream ss;
     ss << "Running telemetry server on port "<< port <<" using docroot=" << docroot;
     m_endpoint.get_alog().write(websocketpp::log::alevel::app,ss.str());
-
-    m_docroot = docroot;
 
     // listen on specified port
     m_endpoint.listen(port);
@@ -144,6 +131,7 @@ void TelemetryServer::set_timer() {
     );
 }
 
+/* Looks like a good callback to insert here module_package */
 void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
     if (ec) {
         // there was an error, stop telemetry
@@ -152,39 +140,28 @@ void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
         return;
     }
     std::stringstream ss;
-    ss << m_count++;
     std::string data = "test_inny" + ss.str();
     output_queue.wr(data);
 
-  /*  // Broadcast count to all connections
-    con_list::iterator it;
-    for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-         I could use to_string here but sadly mingw has problems with it..
-        std::stringstream ss;
-        ss << m_count;
-        m_endpoint.send(*it,ss.str(),websocketpp::frame::opcode::text);
-    }
-    m_count++;
     // set timer for next telemetry check*/
     set_timer();
+}
+
+void TelemetryServer::send_msg(std::string& msg)
+{
+	output_queue.wr(msg);
+}
+
+void TelemetryServer::get_msg(std::string& msg)
+{
+	msg=input_queue.rd();
 }
 
 
 
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
-    /* */
+    /* Put incoming message into queue for further processing */
     input_queue.wr(const_cast<std::string&>(msg->get_payload()));
-
-
-/*
-    std::stringstream ss;
-    ss << "Echo from: " << hdl.lock().get() << "-> "<< msg->get_payload();
-    // Broadcast echo response to all connections
-    con_list::iterator it;
-    for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-
-        m_endpoint.send(*it,ss.str(), msg->get_opcode());
-    }*/
 
 }

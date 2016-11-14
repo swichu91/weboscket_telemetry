@@ -62,7 +62,18 @@ public:
     TelemetryServer();
     ~TelemetryServer();
 
+    /* Start TelemetrySocket server. */
     void run(std::string docroot, uint16_t port);
+
+    /* API to pass/get messages from websocket.
+     * In current version TelemetryServer accepts only string data. Maybe I will expand this functionality in future. */
+    void send_msg(std::string&);
+    void get_msg(std::string&);
+
+    friend void outputdata_worker(TelemetryServer* inst);
+    friend void inputdata_worker(TelemetryServer* inst);
+
+private:
 
     void set_timer();
 
@@ -78,20 +89,10 @@ public:
 
     void on_message(connection_hdl hdl, message_ptr msg);
 
-    friend void outputdata_worker(TelemetryServer* inst);
-    friend void inputdata_worker(TelemetryServer* inst);
-
-private:
-
 
     server m_endpoint;
     con_list m_connections;
     server::timer_ptr m_timer;
-
-    std::string m_docroot;
-
-    // Telemetry data
-    uint64_t m_count;
 
     MsgQueue<std::string> output_queue;
     MsgQueue<std::string> input_queue;
