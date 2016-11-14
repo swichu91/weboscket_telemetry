@@ -135,7 +135,7 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
 
 void TelemetryServer::set_timer() {
     m_timer = m_endpoint.set_timer(
-        50,
+        1000,
         websocketpp::lib::bind(
             &TelemetryServer::on_timer,
             this,
@@ -173,7 +173,11 @@ void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
 
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
+    /* */
+    input_queue.wr(const_cast<std::string&>(msg->get_payload()));
 
+
+/*
     std::stringstream ss;
     ss << "Echo from: " << hdl.lock().get() << "-> "<< msg->get_payload();
     // Broadcast echo response to all connections
@@ -181,6 +185,6 @@ void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
     for (it = m_connections.begin(); it != m_connections.end(); ++it) {
 
         m_endpoint.send(*it,ss.str(), msg->get_opcode());
-    }
+    }*/
 
 }

@@ -44,8 +44,6 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    boost::thread_group worker_threads;
-
     TelemetryServer s;
 
     s.run("", port_nr);
