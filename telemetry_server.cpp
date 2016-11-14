@@ -39,16 +39,16 @@
 * requests.
 */
 
-
 void outputdata_worker(TelemetryServer* inst){
 	while(1){
-		boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+	    std::string temp;
+	    temp = inst->output_queue.rd();
+	        //boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+	        con_list::iterator it;
+	        for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
 
-		con_list::iterator it;
-		for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
-
-			inst->m_endpoint.send(*it,"worker1test",websocketpp::frame::opcode::text);
-		}
+	            inst->m_endpoint.send(*it,temp,websocketpp::frame::opcode::text);
+	        }
 	}
 }
 
@@ -56,12 +56,20 @@ void inputdata_worker(TelemetryServer* inst){
 	while(1){
 		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
 
-		con_list::iterator it;
+		static int count = 0;
+
+		std::stringstream ss;
+		ss << count++;
+		std::string data = "test" + ss.str();
+
+		inst->output_queue.wr(data);
+
+/*		con_list::iterator it;
 
 		for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
 
 			inst->m_endpoint.send(*it,"worker2test",websocketpp::frame::opcode::text);
-		}
+		}*/
 	}
 }
 
@@ -127,7 +135,7 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
 
 void TelemetryServer::set_timer() {
     m_timer = m_endpoint.set_timer(
-        1000,
+        50,
         websocketpp::lib::bind(
             &TelemetryServer::on_timer,
             this,
@@ -143,17 +151,21 @@ void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
                 "Timer Error: "+ec.message());
         return;
     }
+    std::stringstream ss;
+    ss << m_count++;
+    std::string data = "test_inny" + ss.str();
+    output_queue.wr(data);
 
-    // Broadcast count to all connections
+  /*  // Broadcast count to all connections
     con_list::iterator it;
     for (it = m_connections.begin(); it != m_connections.end(); ++it) {
-        /* I could use to_string here but sadly mingw has problems with it.. */
+         I could use to_string here but sadly mingw has problems with it..
         std::stringstream ss;
         ss << m_count;
         m_endpoint.send(*it,ss.str(),websocketpp::frame::opcode::text);
     }
     m_count++;
-    // set timer for next telemetry check
+    // set timer for next telemetry check*/
     set_timer();
 }
 

@@ -25,6 +25,7 @@
 #include <boost/thread.hpp>
 #include <boost/lockfree/queue.hpp>
 #include "msg_queue.h"
+#include <boost/thread/condition_variable.hpp>
 
 /**
  * The telemetry server accepts connections and sends a message every second to

@@ -11,28 +11,48 @@
 #include <boost/thread.hpp>
 #include <deque>
 #include <iostream>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/locks.hpp>
 
 template<typename T>
 class MsgQueue
 {
 	boost::mutex data_mutex;
 	std::deque<T> data_queue;
+    boost::unique_lock<boost::mutex> lk;
+    boost::condition_variable notifier;
 
-	/* Blocking call ? */
-	T& rd(){
+public:
+	/* This is blocking call*/
+	T rd(){
 		T temp;
-		data_mutex.lock();
+		boost::unique_lock<boost::mutex> lk(data_mutex);
+
+		notifier.wait(lk);
 		temp=data_queue.back();
 		data_queue.pop_back();
-		data_mutex.unlock();
 		return temp;
 	}
+	/* Non blocking call */
+    T& rd(const boost::chrono::milliseconds& timeout){
+        T temp;
+        boost::lock_guard<boost::mutex> lock(data_mutex);
+        notifier.wait_for(lk,timeout);
+        temp=data_queue.back();
+        data_queue.pop_back();
+        return temp;
+    }
+
 
 	/* Blocking call ? */
 	void wr(T& t){
-		data_mutex.lock();
+	    boost::lock_guard<boost::mutex> lock(data_mutex);
 		data_queue.push_back(t);
-		data_mutex.unlock();
+		notifier.notify_one();
+	}
+
+	bool isEmpty(){
+	    return data_queue.empty();
 	}
 };
 
