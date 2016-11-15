@@ -28,16 +28,24 @@ public:
 		T temp;
 		boost::unique_lock<boost::mutex> lk(data_mutex);
 
-		notifier.wait(lk);
+		while(data_queue.empty()){
+	        notifier.wait(lk);
+		}
 		temp=data_queue.back();
 		data_queue.pop_back();
 		return temp;
 	}
-	/* Non blocking call */
-    T& rd(const boost::chrono::milliseconds& timeout){
+	/* Non blocking call. It return void element on timeout */
+    T rd(const boost::chrono::milliseconds& timeout){
         T temp;
+
         boost::lock_guard<boost::mutex> lock(data_mutex);
-        notifier.wait_for(lk,timeout);
+
+        while(data_queue.empty()){
+            if(notifier.wait_for(lk,timeout) == boost::cv_status::timeout){
+                return temp;
+            }
+        }
         temp=data_queue.back();
         data_queue.pop_back();
         return temp;

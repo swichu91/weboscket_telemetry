@@ -54,8 +54,6 @@ void outputdata_worker(TelemetryServer* inst){
 
 void inputdata_worker(TelemetryServer* inst){
 	while(1){
-		boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-
 		/* Only for test purposes */
 		std::cout << inst->input_queue.rd();
 
@@ -139,7 +137,9 @@ void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
                 "Timer Error: "+ec.message());
         return;
     }
+    static int count = 0;
     std::stringstream ss;
+    ss << count++;
     std::string data = "test_inny" + ss.str();
     output_queue.wr(data);
 
