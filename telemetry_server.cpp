@@ -57,6 +57,8 @@ void inputdata_worker(TelemetryServer* inst){
 		/* Only for test purposes */
 		std::cout << inst->input_queue.rd();
 
+		/* Parsing data */
+
 	}
 }
 
@@ -81,6 +83,7 @@ TelemetryServer::TelemetryServer(){
 
 TelemetryServer::~TelemetryServer()
 {
+    UnregisterAll();
 	//outputdata_thread.join();
 	//inputdata_thread.join();
 }

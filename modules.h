@@ -4,7 +4,7 @@
 
 class Modules
 {
-    typedef std::set<std::string,int>  module;
+    typedef std::map<std::string,int>  module;
     module modules_;
 
 public:
@@ -42,7 +42,11 @@ public:
          }else{
              return NOT_FOUND;
          }
+    }
 
+    mod_ret UnregisterAll(){
+        modules_.clear();
+        return OK;
     }
 
     mod_ret IsRegistered(const std::string& s){

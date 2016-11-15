@@ -27,6 +27,8 @@
 #include "msg_queue.h"
 #include <boost/thread/condition_variable.hpp>
 
+#include "modules.h"
+
 /**
  * The telemetry server accepts connections and sends a message every second to
  * each client containing an integer count. This example can be used as the
@@ -70,10 +72,22 @@ public:
     void send_msg(std::string&);
     void get_msg(std::string&);
 
+    /* Module wrappers */
+    Modules::mod_ret Register(const std::string& s){
+       return modules_.Register(s);
+    }
+
+
+
     friend void outputdata_worker(TelemetryServer* inst);
     friend void inputdata_worker(TelemetryServer* inst);
 
 private:
+
+    /* Private module wrappers */
+    Modules::mod_ret UnregisterAll(){
+       return modules_.UnregisterAll();
+    }
 
     void set_timer();
 
@@ -89,7 +103,7 @@ private:
 
     void on_message(connection_hdl hdl, message_ptr msg);
 
-
+    Modules modules_;
     server m_endpoint;
     con_list m_connections;
     server::timer_ptr m_timer;
