@@ -15,6 +15,8 @@
 #include <boost/thread.hpp>
 #include <boost/smart_ptr/scoped_ptr.hpp>
 
+#include <windows.h>
+
 using namespace std;
 
 void print_usage()
@@ -23,14 +25,17 @@ void print_usage()
     cout << "       w <threads number>" << endl;
 }
 
+
+
 #include "msg_queue.h"
 TelemetryServer s;
+
 
 void module1(void){
     MsgQueue<std::string>* ptr =new MsgQueue<std::string>;
     s.RegisterModule("module1",ptr);
 
-    while(1)
+   // while(1)
     {
         boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
         std::string str = "testowy msg1 !\r\n";
@@ -45,7 +50,7 @@ void module2(void){
     MsgQueue<std::string>* ptr =new MsgQueue<std::string>;
     s.RegisterModule("module2",ptr);
 
-    while(1)
+    //while(1)
     {
         boost::this_thread::sleep(boost::posix_time::milliseconds(500));
         std::string str = "testowy msg2 !\r\n";
@@ -54,6 +59,20 @@ void module2(void){
 
     delete ptr;
 }
+
+//boost::thread mod1_thread{module1};
+//boost::thread mod2_thread{module2};
+
+/*BOOL WINAPI consoleHandler(DWORD signal) {
+
+    if (signal == CTRL_C_EVENT){
+        std::cout << ("Ctrl-C handled\n");
+        mod1_thread.detach();
+        mod2_thread.detach();
+    }
+    return TRUE;
+}*/
+
 
 
 int main(int argc, char** argv) {
@@ -76,13 +95,16 @@ int main(int argc, char** argv) {
         print_usage();
         exit(EXIT_FAILURE);
     }
-    boost::thread mod1_thread{module1};
-    boost::thread mod2_thread{module2};
+
+/*    if (!SetConsoleCtrlHandler(consoleHandler, TRUE)) {
+        printf("\nERROR: Could not set control handler");
+        return 1;
+    }*/
 
     s.run("", port_nr);
 
-    mod1_thread.join();
-    mod2_thread.join();
+    //mod1_thread.join();
+    //mod2_thread.join();
 }
 
 
