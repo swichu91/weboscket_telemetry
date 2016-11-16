@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <map>
+#include <boost/algorithm/string.hpp>
 #include "msg_queue.h"
 
 class Modules
@@ -58,6 +59,26 @@ public:
          }else{
              return NOT_FOUND;
          }
+    }
+
+    void ParseAndRouteMsg(const std::string& s){
+
+    	std::vector<std::string> strs;
+    	boost::split(strs,s, boost::is_any_of(":"));
+
+
+    	module::iterator it;
+    	it = modules_.find(strs[0]);
+    	/* 0 element contains name od module */
+    	if(it != modules_.end()){
+    		/* Ok, msg can be passed to module cause it's been already loaded */
+    		std::cout << "Msg: " << strs[1] <<" passed to module: " << strs[0] << std::endl;
+    		modules_[strs[0]]->wr(strs[1]);
+    	}else{
+    		//TODO: silently ignore this request
+    		std::cout << "Module not found !" << std::endl;
+    	}
+
     }
 
 };

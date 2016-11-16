@@ -74,7 +74,7 @@ public:
 
     /* Register module and corresponding queue */
     Modules::mod_ret RegisterModule(const std::string& s, MsgQueue<std::string>* const msgq){
-        std::cout << "Module " << s << " registered" << std::endl;
+        std::cout << "Module: " << s << " registered!" << std::endl;
        return modules_.Register(s,msgq);
     }
 

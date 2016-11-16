@@ -100,7 +100,7 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
     m_endpoint.start_accept();
 
     // Set the initial timer to start telemetry
-    set_timer();
+    //set_timer();
 
     /* Spam two threads
      * Use of scoped threads eliminates need for calling join inside class destructor
@@ -164,6 +164,7 @@ void TelemetryServer::ReceiveMsg(std::string& msg)
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
     /* Put incoming message into queue for further processing */
+	modules_.ParseAndRouteMsg(msg->get_payload());
     //input_queue.wr(const_cast<std::string&>(msg->get_payload()));
 
     /* Parse data:
