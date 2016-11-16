@@ -73,8 +73,8 @@ public:
     void get_msg(std::string&);
 
     /* Module wrappers */
-    Modules::mod_ret Register(const std::string& s){
-       return modules_.Register(s);
+    Modules::mod_ret Register(const std::string& s, MsgQueue<std::string>* const msgq){
+       return modules_.Register(s,msgq);
     }
 
 

@@ -57,7 +57,9 @@ void inputdata_worker(TelemetryServer* inst){
 		/* Only for test purposes */
 		std::cout << inst->input_queue.rd();
 
-		/* Parsing data */
+		/* Parse data:
+		 * Remove Module's prefix/name and then route message into selected module */
+
 
 	}
 }

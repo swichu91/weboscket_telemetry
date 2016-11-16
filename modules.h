@@ -1,10 +1,11 @@
 
 #include <iostream>
 #include <map>
+#include "msg_queue.h"
 
 class Modules
 {
-    typedef std::map<std::string,int>  module;
+    typedef std::map<std::string,MsgQueue<std::string>* >  module;
     module modules_;
 
 public:
@@ -15,10 +16,10 @@ public:
         NOT_FOUND = -2
     }mod_ret;
 
-    Modules();
-    ~Modules();
+    Modules(){};
+    ~Modules(){};
 
-    mod_ret Register(const std::string& s){
+    mod_ret Register(const std::string& s,MsgQueue<std::string>* const msgq){
 
         module::iterator it;
 
@@ -27,7 +28,7 @@ public:
              /* Module has been already registered */
              return ALREADY_REGISTERED;
          }else{
-             modules_[s] = 0;
+             modules_[s] = msgq;
              return OK;
          }
 
