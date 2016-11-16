@@ -69,11 +69,12 @@ public:
 
     /* API to pass/get messages from websocket.
      * In current version TelemetryServer accepts only string data. Maybe I will expand this functionality in future. */
-    void send_msg(std::string&);
-    void get_msg(std::string&);
+    void SendMsg(std::string&);
+    void ReceiveMsg(std::string&);
 
-    /* Module wrappers */
-    Modules::mod_ret Register(const std::string& s, MsgQueue<std::string>* const msgq){
+    /* Register module and corresponding queue */
+    Modules::mod_ret RegisterModule(const std::string& s, MsgQueue<std::string>* const msgq){
+        std::cout << "Module " << s << " registered" << std::endl;
        return modules_.Register(s,msgq);
     }
 

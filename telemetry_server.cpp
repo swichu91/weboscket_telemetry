@@ -52,17 +52,14 @@ void outputdata_worker(TelemetryServer* inst){
 	}
 }
 
-void inputdata_worker(TelemetryServer* inst){
+/*void inputdata_worker(TelemetryServer* inst){
 	while(1){
-		/* Only for test purposes */
+		 Only for test purposes
 		std::cout << inst->input_queue.rd();
-
-		/* Parse data:
-		 * Remove Module's prefix/name and then route message into selected module */
 
 
 	}
-}
+}*/
 
 TelemetryServer::TelemetryServer(){
     // set up access channels to only log interesting things
@@ -113,7 +110,7 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
     boost::scoped_thread<> outputdata_thread{boost::thread{outputdata_worker,this}};
 
     /* Pass messages to websocket server from external clients(producers) */
-    boost::scoped_thread<> inputdata_thread{boost::thread{inputdata_worker,this}};
+    //boost::scoped_thread<> inputdata_thread{boost::thread{inputdata_worker,this}};
 
     // Start the ASIO io_service run loop
     try {
@@ -152,12 +149,12 @@ void TelemetryServer::on_timer(websocketpp::lib::error_code const & ec) {
     set_timer();
 }
 
-void TelemetryServer::send_msg(std::string& msg)
+void TelemetryServer::SendMsg(std::string& msg)
 {
 	output_queue.wr(msg);
 }
 
-void TelemetryServer::get_msg(std::string& msg)
+void TelemetryServer::ReceiveMsg(std::string& msg)
 {
 	msg=input_queue.rd();
 }
@@ -167,6 +164,11 @@ void TelemetryServer::get_msg(std::string& msg)
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
     /* Put incoming message into queue for further processing */
-    input_queue.wr(const_cast<std::string&>(msg->get_payload()));
+    //input_queue.wr(const_cast<std::string&>(msg->get_payload()));
+
+    /* Parse data:
+     * Remove Module's prefix/name and then route message into selected module */
+
+
 
 }
