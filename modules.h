@@ -2,12 +2,17 @@
 #include <iostream>
 #include <map>
 #include <boost/algorithm/string.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/mutex.hpp>
 #include "msg_queue.h"
+
+typedef boost::shared_ptr<MsgQueue<std::string>> module_ptr;
 
 class Modules
 {
-    typedef std::map<std::string,MsgQueue<std::string>* >  module;
+    typedef std::map<std::string,module_ptr>  module;
     module modules_;
+    boost::mutex lock;
 
 public:
 
@@ -20,10 +25,11 @@ public:
     Modules(){};
     ~Modules(){};
 
-    mod_ret Register(const std::string& s,MsgQueue<std::string>* const msgq){
+    mod_ret Register(const std::string& s,module_ptr msgq){
 
         module::iterator it;
 
+        boost::unique_lock<boost::mutex> lk(lock);
         it = modules_.find(s);
          if (it != modules_.end()){
              /* Module has been already registered */
@@ -37,6 +43,7 @@ public:
     mod_ret Unregister(const std::string& s){
 
         module::iterator it;
+        boost::unique_lock<boost::mutex> lk(lock);
         it = modules_.find(s);
          if (it != modules_.end()){
              modules_.erase (it);
@@ -47,12 +54,15 @@ public:
     }
 
     mod_ret UnregisterAll(){
+        boost::unique_lock<boost::mutex> lk(lock);
         modules_.clear();
         return OK;
     }
 
     mod_ret IsRegistered(const std::string& s){
         module::iterator it;
+
+        boost::unique_lock<boost::mutex> lk(lock);
         it = modules_.find(s);
          if (it != modules_.end()){
              return OK;
@@ -61,7 +71,7 @@ public:
          }
     }
 
-    void ParseAndRouteMsg(const std::string& s){
+    void RouteMsg(const std::string& s){
 
     	std::vector<std::string> strs;
     	boost::split(strs,s, boost::is_any_of(":"));
@@ -76,7 +86,7 @@ public:
     		modules_[strs[0]]->wr(strs[1]);
     	}else{
     		//TODO: silently ignore this request
-    		std::cout << "Module not found !" << std::endl;
+    		std::cout << "Module:" << strs[0] << " not found !" << std::endl;
     	}
 
     }

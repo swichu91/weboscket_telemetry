@@ -73,7 +73,7 @@ public:
     void ReceiveMsg(std::string&);
 
     /* Register module and corresponding queue */
-    Modules::mod_ret RegisterModule(const std::string& s, MsgQueue<std::string>* const msgq){
+    Modules::mod_ret RegisterModule(const std::string& s, module_ptr msgq){
         std::cout << "Module: " << s << " registered!" << std::endl;
        return modules_.Register(s,msgq);
     }
@@ -110,7 +110,7 @@ private:
     server::timer_ptr m_timer;
 
     MsgQueue<std::string> output_queue;
-    MsgQueue<std::string> input_queue;
+    //MsgQueue<std::string> input_queue;
 };
 
 

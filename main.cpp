@@ -15,6 +15,8 @@
 #include <boost/thread.hpp>
 #include <boost/smart_ptr/scoped_ptr.hpp>
 
+#include "temp_test.h"
+
 using namespace std;
 
 void print_usage()
@@ -28,9 +30,7 @@ void print_usage()
 
 
 void module1(TelemetryServer* inst){
-    MsgQueue<std::string>* ptr =new MsgQueue<std::string>;
-    inst->RegisterModule("module1",ptr);
-
+    inst->RegisterModule("module1",boost::make_shared<MsgQueue<std::string>>());
     while(1)
     {
         boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
@@ -38,13 +38,11 @@ void module1(TelemetryServer* inst){
         inst->SendMsg(str);
     }
 
-    delete ptr;
 }
 
 
 void module2(TelemetryServer* inst){
-    MsgQueue<std::string>* ptr =new MsgQueue<std::string>;
-    inst->RegisterModule("module2",ptr);
+    inst->RegisterModule("module2",boost::make_shared<MsgQueue<std::string>>());
 
     while(1)
     {
@@ -53,7 +51,6 @@ void module2(TelemetryServer* inst){
         inst->SendMsg(str);
     }
 
-    delete ptr;
 }
 
 
@@ -81,13 +78,15 @@ int main(int argc, char** argv) {
 
     TelemetryServer s;
 
-    boost::scoped_thread<> mod1_thread{boost::thread{module1,&s}};
-    boost::scoped_thread<> mod2_thread{boost::thread{module2,&s}};
+    std::string module1 = "tempm";
+    TempTest temptest(module1,&s);
+    temptest.run();
+
+   // boost::scoped_thread<> mod1_thread{boost::thread{module1,&s}};
+    //boost::scoped_thread<> mod2_thread{boost::thread{module2,&s}};
 
     s.run("", port_nr);
 
-   /* mod1_thread.join();
-    mod2_thread.join();*/
 }
 
 

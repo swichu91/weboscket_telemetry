@@ -19,7 +19,6 @@ class MsgQueue
 {
 	boost::mutex data_mutex;
 	std::deque<T> data_queue;
-    boost::unique_lock<boost::mutex> lk;
     boost::condition_variable notifier;
 
 public:
@@ -39,7 +38,7 @@ public:
     T rd(const boost::chrono::milliseconds& timeout){
         T temp;
 
-        boost::lock_guard<boost::mutex> lock(data_mutex);
+        boost::unique_lock<boost::mutex> lk(data_mutex);
 
         while(data_queue.empty()){
             if(notifier.wait_for(lk,timeout) == boost::cv_status::timeout){

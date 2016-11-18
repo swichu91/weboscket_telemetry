@@ -156,15 +156,15 @@ void TelemetryServer::SendMsg(std::string& msg)
 
 void TelemetryServer::ReceiveMsg(std::string& msg)
 {
-	msg=input_queue.rd();
+	//msg=input_queue.rd();
 }
 
 
 
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
-    /* Put incoming message into queue for further processing */
-	modules_.ParseAndRouteMsg(msg->get_payload());
+    /* Put incoming message into corresponding module's queue for further processing */
+	modules_.RouteMsg(msg->get_payload());
     //input_queue.wr(const_cast<std::string&>(msg->get_payload()));
 
     /* Parse data:
