@@ -8,21 +8,19 @@
 class TempTest  : public ModuleInterface {
 
 public:
-    TempTest(std::string& name,TelemetryServer* inst){
+    TempTest(std::string& name,TelemetryServer* inst): ModuleInterface(inst) {
         inst_=inst;
         queue_ = boost::make_shared<MsgQueue<std::string>>();
         inst_->RegisterModule(const_cast<std::string&>(name),queue_);
-
-        //boost::scoped_thread<> mod1_thread{boost::thread{MainThread_,this,inst_}};
-        //inst_->RegisterModule(const_cast<std::string&>(name),queue_);
-
     }
     ~TempTest();
 
+    /* Methods below are pure virtual and need to be implemented */
     void run();
+    void ParseMsg(std::string&);
+    void SendMsg();
 
 private:
-    TelemetryServer* inst_;
     boost::shared_ptr<MsgQueue<std::string>> queue_;
     void MainThread_(TelemetryServer* inst);
 };
