@@ -17,7 +17,7 @@ public:
 
     /* Methods below are pure virtual and need to be implemented */
     void run();
-    void ParseMsg(std::string&){};
+    //void ParseMsg(std::string&){};
     void BuildMsg(){};
 
 private:
