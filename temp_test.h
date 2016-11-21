@@ -17,8 +17,8 @@ public:
 
     /* Methods below are pure virtual and need to be implemented */
     void run();
-    void ParseMsg(std::string&);
-    void SendMsg();
+    void ParseMsg(std::string&){};
+    void BuildMsg(){};
 
 private:
     boost::shared_ptr<MsgQueue<std::string>> queue_;

@@ -27,34 +27,6 @@ void print_usage()
 
 #include "msg_queue.h"
 
-
-
-void module1(TelemetryServer* inst){
-    inst->RegisterModule("module1",boost::make_shared<MsgQueue<std::string>>());
-    while(1)
-    {
-        boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
-        std::string str = "testowy msg1 !\r\n";
-        inst->SendMsg(str);
-    }
-
-}
-
-
-void module2(TelemetryServer* inst){
-    inst->RegisterModule("module2",boost::make_shared<MsgQueue<std::string>>());
-
-    while(1)
-    {
-        boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-        std::string str = "testowy msg2 !\r\n";
-        inst->SendMsg(str);
-    }
-
-}
-
-
-
 int main(int argc, char** argv) {
 
     int opt;
@@ -80,7 +52,7 @@ int main(int argc, char** argv) {
 
     std::string module1 = "tempm";
     TempTest temptest(module1,&s);
-    temptest.run()
+    temptest.run();
 
    // boost::scoped_thread<> mod1_thread{boost::thread{module1,&s}};
     //boost::scoped_thread<> mod2_thread{boost::thread{module2,&s}};

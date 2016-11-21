@@ -16,7 +16,11 @@ protected:
     virtual void ParseMsg(std::string&) =0;
 
     /** Message format: 'Module name+arg1:val1,Module name+arg2:val2 and so on */
-    virtual void SendMsg() =0;
+    virtual void BuildMsg() =0;
+
+    void SendMsg(std::string& msg){
+        inst_->SendMsg(msg);
+    }
 
 public:
     ModuleInterface(TelemetryServer* inst){
