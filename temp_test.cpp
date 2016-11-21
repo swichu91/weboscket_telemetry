@@ -22,8 +22,14 @@ void TempTest::MainThread_(TelemetryServer* inst){
     static int cnt =0;
     while(1)
     {
-        std::string test = "cmd1:55,cmd2:66,cmd3:22";
-        ParseMsg(test);
+        //std::string test = "cmd1:55,cmd2:,cmd3";
+
+    	std::string test = queue_->rd(boost::chrono::milliseconds(1));
+
+    	if(test != ""){
+    		ParseMsg(test);
+    	}
+
 
         boost::this_thread::sleep(boost::posix_time::milliseconds(1000));
         std::stringstream ss;

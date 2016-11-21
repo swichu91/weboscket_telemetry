@@ -1,6 +1,7 @@
 
 #include "msg_queue.h"
 #include "telemetry_server.h"
+#include "opcodes.h"
 
 #include <iostream>
 #include <boost/thread.hpp>
@@ -8,45 +9,61 @@
 #include <boost/bind.hpp>
 #include <boost/tokenizer.hpp>
 
+
 class ModuleInterface
 {
+	typedef std::vector<std::pair<std::string,std::string>> cmd_vect;
+
+	enum{TOKEN_CMD=1,TOKEN_VAL=2};
+
 protected:
     TelemetryServer* inst_;
+    Opcodes opcodes;
 
-    /** Incoming message format: 'Cmd1:arg1,Cmd2:arg2 and so on' */
-    void ParseMsg(std::string& s){
-        std::vector<std::pair<std::string,std::string>> cmdval;
+
+	Opcodes::ret ExecuteCmd(std::pair<std::string,std::string>& cmdpair){
+		return opcodes.InvokeHandler(cmdpair);
+	}
+
+    /** Incoming message format: 'Cmd1=arg1,Cmd2=arg2 and so on' */
+    cmd_vect ParseMsg(std::string& s){
+
         typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+        cmd_vect cmdval;
         boost::char_separator<char> sep{","};
         tokenizer tok{s,sep};
 
         /* Split input string into cmd&val pairs.*/
          for (tokenizer::iterator it = tok.begin(); it != tok.end(); ++it){
 
-             boost::char_separator<char> sep{":"};
+             boost::char_separator<char> sep{"="};
              tokenizer tok1{*it,sep};
 
-             int pcnt =1;
+             int pcnt = TOKEN_CMD;
              std::pair<std::string,std::string> temp_pair;
-             /* Possible input: cmd:val, cmd: or cmd */
+             /* Possible input: cmd=val, cmd= or cmd */
              for(tokenizer::iterator it1 = tok1.begin();it1 !=tok1.end();++it1){
 
-                 if(pcnt == 1){
+                 if(pcnt == TOKEN_CMD){
                      temp_pair.first = *it1;
-                 }else if(pcnt == 2){
+                 }else if(pcnt == TOKEN_VAL){
                      temp_pair.second = *it1;
                  }
-                 pcnt++;
+                 ++pcnt;
              }
              cmdval.push_back(temp_pair);
+             /* Invoke cmd and pass corresponding value */
+             std::cout << ExecuteCmd(temp_pair) << std::endl;
          }
 
-         for(std::vector<std::pair<std::string,std::string>>::iterator it = cmdval.begin(); it!= cmdval.end();++it){
 
+
+
+         for(cmd_vect::iterator it = cmdval.begin(); it!= cmdval.end();++it){
              std::cout << (*it).first << "->" << (*it).second << std::endl;
          }
 
-
+         return cmdval;
 
     }
 
