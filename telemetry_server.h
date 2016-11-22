@@ -78,8 +78,6 @@ public:
        return modules_.Register(s,msgq);
     }
 
-
-
     friend void outputdata_worker(TelemetryServer* inst);
     friend void inputdata_worker(TelemetryServer* inst);
 

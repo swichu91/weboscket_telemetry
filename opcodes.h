@@ -47,11 +47,11 @@ public:
 
 	void InvokeHandlers(cmd_vect& cmdval){
 
+	    /* Invoke all commands that cmd vector has. */
 	    for(auto i: cmdval){
 
             switch(std::stoi(i.first,nullptr,10)){
 
-            /* Code_Data_Req */
             case Code_Data_Req:
                 std::cout << Handler_Data_Req(std::stoi(i.second,nullptr,10)) << std::endl;
                 break;
