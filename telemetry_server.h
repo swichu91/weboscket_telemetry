@@ -23,7 +23,6 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/scoped_thread.hpp>
 #include <boost/thread.hpp>
-#include <boost/lockfree/queue.hpp>
 #include "msg_queue.h"
 #include <boost/thread/condition_variable.hpp>
 

@@ -8,24 +8,24 @@
 #ifndef MSG_QUEUE_H_
 #define MSG_QUEUE_H_
 
-#include <boost/thread.hpp>
+#include <condition_variable>
+#include <thread>
 #include <deque>
 #include <iostream>
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/locks.hpp>
+#include <mutex>
 
 template<typename T>
 class MsgQueue
 {
-	boost::mutex data_mutex;
+	std::mutex data_mutex;
 	std::deque<T> data_queue;
-    boost::condition_variable notifier;
+    std::condition_variable notifier;
 
 public:
 	/* This is blocking call*/
 	T rd(){
 		T temp;
-		boost::unique_lock<boost::mutex> lk(data_mutex);
+		std::unique_lock<std::mutex> lk(data_mutex);
 
 		while(data_queue.empty()){
 	        notifier.wait(lk);
@@ -35,13 +35,13 @@ public:
 		return temp;
 	}
 	/* Non blocking call. It return void element on timeout */
-    T rd(const boost::chrono::milliseconds& timeout){
+    T rd(const std::chrono::milliseconds& timeout){
         T temp;
 
-        boost::unique_lock<boost::mutex> lk(data_mutex);
+        std::unique_lock<std::mutex> lk(data_mutex);
 
         while(data_queue.empty()){
-            if(notifier.wait_for(lk,timeout) == boost::cv_status::timeout){
+            if(notifier.wait_for(lk,timeout) == std::cv_status::timeout){
                 return temp;
             }
         }
@@ -53,7 +53,7 @@ public:
 
 	/* Blocking call ? */
 	void wr(T& t){
-	    boost::lock_guard<boost::mutex> lock(data_mutex);
+	    std::lock_guard<std::mutex> lock(data_mutex);
 		data_queue.push_back(t);
 		notifier.notify_one();
 	}

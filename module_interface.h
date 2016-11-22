@@ -6,9 +6,6 @@
 #include "telemetry_server.h"
 #include "opcodes.h"
 #include <iostream>
-#include <boost/thread.hpp>
-#include <boost/smart_ptr/scoped_ptr.hpp>
-#include <boost/bind.hpp>
 #include <boost/tokenizer.hpp>
 
 class ModuleInterface

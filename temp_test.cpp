@@ -7,13 +7,14 @@
 */
 
 #include <sstream>
+#include <thread>
 
 TempTest::~TempTest(){}
 
 void TempTest::run(){
     /*boost::scoped_thread<> mod1_threadboost::thread{MainThread_,this,inst_};*/
     /* only temporary solution. I need more elegant way to finish thread */
-    boost::thread mythread{MainThread_,this,inst_};
+    std::thread mythread{MainThread_,this,inst_};
 }
 
 
@@ -22,7 +23,7 @@ void TempTest::MainThread_(TelemetryServer* inst){
     static int cnt =0;
     while(1)
     {
-    	std::string test = queue_->rd(boost::chrono::milliseconds(1));
+    	std::string test = queue_->rd(std::chrono::milliseconds(1));
 
     	if(test != ""){
     	    cmd_vect ret = ParseMsg(test);

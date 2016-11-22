@@ -1,18 +1,18 @@
 
 #include <iostream>
 #include <map>
+#include <thread>
+#include <mutex>
 #include <boost/algorithm/string.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/mutex.hpp>
 #include "msg_queue.h"
 
-typedef boost::shared_ptr<MsgQueue<std::string>> module_ptr;
+typedef std::shared_ptr<MsgQueue<std::string>> module_ptr;
 
 class Modules
 {
     typedef std::map<std::string,module_ptr>  module;
     module modules_;
-    boost::mutex lock;
+    std::mutex lock;
 
 public:
 
@@ -29,7 +29,7 @@ public:
 
         module::iterator it;
 
-        boost::unique_lock<boost::mutex> lk(lock);
+        std::unique_lock<std::mutex> lk(lock);
         it = modules_.find(s);
          if (it != modules_.end()){
              /* Module has been already registered */
@@ -43,7 +43,7 @@ public:
     mod_ret Unregister(const std::string& s){
 
         module::iterator it;
-        boost::unique_lock<boost::mutex> lk(lock);
+        std::unique_lock<std::mutex> lk(lock);
         it = modules_.find(s);
          if (it != modules_.end()){
              modules_.erase (it);
@@ -54,7 +54,7 @@ public:
     }
 
     mod_ret UnregisterAll(){
-        boost::unique_lock<boost::mutex> lk(lock);
+    	std::unique_lock<std::mutex> lk(lock);
         modules_.clear();
         return OK;
     }
@@ -62,7 +62,7 @@ public:
     mod_ret IsRegistered(const std::string& s){
         module::iterator it;
 
-        boost::unique_lock<boost::mutex> lk(lock);
+        std::unique_lock<std::mutex> lk(lock);
         it = modules_.find(s);
          if (it != modules_.end()){
              return OK;
