@@ -1,34 +1,28 @@
 
+#ifndef MODULE_INTERFACE_H_
+#define MODULE_INTERFACE_H_
+
 #include "msg_queue.h"
 #include "telemetry_server.h"
 #include "opcodes.h"
-
 #include <iostream>
 #include <boost/thread.hpp>
 #include <boost/smart_ptr/scoped_ptr.hpp>
 #include <boost/bind.hpp>
 #include <boost/tokenizer.hpp>
 
-
 class ModuleInterface
 {
-	typedef std::vector<std::pair<std::string,std::string>> cmd_vect;
-
 	enum{TOKEN_CMD=1,TOKEN_VAL=2};
 
 protected:
     TelemetryServer* inst_;
-    Opcodes opcodes;
-
-
-	Opcodes::ret ExecuteCmd(std::pair<std::string,std::string>& cmdpair){
-		return opcodes.InvokeHandler(cmdpair);
-	}
 
     /** Incoming message format: 'Cmd1=arg1,Cmd2=arg2 and so on' */
     cmd_vect ParseMsg(std::string& s){
 
         typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+
         cmd_vect cmdval;
         boost::char_separator<char> sep{","};
         tokenizer tok{s,sep};
@@ -52,13 +46,8 @@ protected:
                  ++pcnt;
              }
              cmdval.push_back(temp_pair);
-             /* Invoke cmd and pass corresponding value */
-             std::cout << ExecuteCmd(temp_pair) << std::endl;
          }
-
-
-
-
+         /* Only for debug purposes */
          for(cmd_vect::iterator it = cmdval.begin(); it!= cmdval.end();++it){
              std::cout << (*it).first << "->" << (*it).second << std::endl;
          }
@@ -85,3 +74,5 @@ public:
 
 
 };
+
+#endif

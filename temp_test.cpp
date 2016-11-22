@@ -27,7 +27,8 @@ void TempTest::MainThread_(TelemetryServer* inst){
     	std::string test = queue_->rd(boost::chrono::milliseconds(1));
 
     	if(test != ""){
-    		ParseMsg(test);
+    	    cmd_vect ret = ParseMsg(test);
+    		InvokeHandlers(ret);
     	}
 
 

@@ -8,12 +8,16 @@
 #ifndef OPCODES_H_
 #define OPCODES_H_
 
+
 #include <iostream>
 #include <string>
 
+typedef std::vector<std::pair<std::string,std::string>> cmd_vect;
+
 class Opcodes
 {
-	private:
+public:
+
 	typedef int handler_param;
 
 
@@ -22,12 +26,10 @@ class Opcodes
 
 		Code_Data_Req = 0,/* Asynchronous data request*/
 		Code_Data_Cyclic = 1,/* Synchronous data request*/
+		Code_Stop = 2, /* Put module into silent mode(it won't send any data do webserver)*/
 
 		/* TBD */
 	} opcodes;
-
-
-public:
 
 	typedef enum{
 		Cmd_Not_Found = 0,
@@ -37,26 +39,30 @@ public:
 	}ret;
 
 	/* Each of opcode handler needs to be implemented inside specific module. */
-	/*virtual */ret Handler_Data_Req(handler_param){return Cmd_Not_Implemented;}
-	/*virtual */ret Handler_Data_Cyclic(handler_param){return Cmd_Not_Implemented;}
-
+	virtual ret Handler_Data_Req(handler_param){return Cmd_Not_Implemented;}
+	virtual ret Handler_Data_Cyclic(handler_param){return Cmd_Not_Implemented;}
+	virtual ret Handler_Stop(handler_param){return Cmd_Not_Implemented;}
 
 	virtual ~Opcodes(){};
 
-	ret InvokeHandler(std::pair<std::string,std::string>& cmdval){
+	void InvokeHandlers(cmd_vect& cmdval){
 
-		switch(std::stoi(cmdval.first,nullptr,10)){
+	    for(auto i: cmdval){
 
-		/* Code_Data_Req */
-		case Code_Data_Req:
-			return Handler_Data_Req(std::stoi(cmdval.second,nullptr,10));
-		case Code_Data_Cyclic:
-			return Handler_Data_Cyclic(std::stoi(cmdval.second,nullptr,10));
+            switch(std::stoi(i.first,nullptr,10)){
 
-		default:
-			return Cmd_Not_Found;
-		}
+            /* Code_Data_Req */
+            case Code_Data_Req:
+                std::cout << Handler_Data_Req(std::stoi(i.second,nullptr,10)) << std::endl;
+                break;
+            case Code_Data_Cyclic:
+                std::cout << Handler_Data_Cyclic(std::stoi(i.second,nullptr,10)) << std::endl;
+                break;
+            default:
+                std::cout << Cmd_Not_Found << std::endl;
+            }
 
+	    }
 	}
 
 };
