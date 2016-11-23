@@ -20,11 +20,8 @@
 #include <string>
 #include <sstream>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/thread/scoped_thread.hpp>
 #include <boost/thread.hpp>
 #include "msg_queue.h"
-#include <boost/thread/condition_variable.hpp>
 
 #include "modules.h"
 
@@ -69,7 +66,6 @@ public:
     /* API to pass/get messages from websocket.
      * In current version TelemetryServer accepts only string data. Maybe I will expand this functionality in future. */
     void SendMsg(std::string&);
-    void ReceiveMsg(std::string&);
 
     /* Register module and corresponding queue */
     Modules::mod_ret RegisterModule(const std::string& s, module_ptr msgq){
@@ -78,7 +74,6 @@ public:
     }
 
     friend void outputdata_worker(TelemetryServer* inst);
-    friend void inputdata_worker(TelemetryServer* inst);
 
 private:
 
@@ -107,7 +102,6 @@ private:
     server::timer_ptr m_timer;
 
     MsgQueue<std::string> output_queue;
-    //MsgQueue<std::string> input_queue;
 };
 
 

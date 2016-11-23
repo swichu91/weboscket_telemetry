@@ -76,7 +76,6 @@ public:
     	std::vector<std::string> strs;
     	boost::split(strs,s, boost::is_any_of(":"));
 
-
     	module::iterator it;
     	it = modules_.find(strs[0]);
     	/* 0 element contains name od module */

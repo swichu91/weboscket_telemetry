@@ -16,6 +16,8 @@
 #include <streambuf>
 #include <string>
 #include <sstream>
+#include <boost/thread/scoped_thread.hpp>
+#include <boost/thread/thread.hpp>
 
 
 /**
@@ -40,26 +42,17 @@
 */
 
 void outputdata_worker(TelemetryServer* inst){
+
 	while(1){
 	    std::string temp;
-	    temp = inst->output_queue.rd();
-	        //boost::this_thread::sleep(boost::posix_time::milliseconds(500));
-	        con_list::iterator it;
-	        for (it = inst->m_connections.begin(); it != inst->m_connections.end(); ++it) {
 
-	            inst->m_endpoint.send(*it,temp,websocketpp::frame::opcode::text);
-	        }
+	    temp = inst->output_queue.rd();
+
+	    for(auto it : inst->m_connections){
+	        inst->m_endpoint.send(it,temp,websocketpp::frame::opcode::text);
+	    }
 	}
 }
-
-/*void inputdata_worker(TelemetryServer* inst){
-	while(1){
-		 Only for test purposes
-		std::cout << inst->input_queue.rd();
-
-
-	}
-}*/
 
 TelemetryServer::TelemetryServer(){
     // set up access channels to only log interesting things
@@ -102,15 +95,11 @@ void TelemetryServer::run(std::string docroot, uint16_t port) {
     // Set the initial timer to start telemetry
     //set_timer();
 
-    /* Spam two threads
-     * Use of scoped threads eliminates need for calling join inside class destructor
+    /*
+     *  Use of scoped thread eliminates need for calling join inside class destructor
+     * Pass messages from websocket to external clients(producers)
      */
-
-    /* Pass messages from websocket to external clients(producers) */
     boost::scoped_thread<> outputdata_thread{boost::thread{outputdata_worker,this}};
-
-    /* Pass messages to websocket server from external clients(producers) */
-    //boost::scoped_thread<> inputdata_thread{boost::thread{inputdata_worker,this}};
 
     // Start the ASIO io_service run loop
     try {
@@ -154,22 +143,9 @@ void TelemetryServer::SendMsg(std::string& msg)
 	output_queue.wr(msg);
 }
 
-void TelemetryServer::ReceiveMsg(std::string& msg)
-{
-	//msg=input_queue.rd();
-}
-
-
-
 void TelemetryServer::on_message(connection_hdl hdl, message_ptr msg){
 
     /* Put incoming message into corresponding module's queue for further processing */
 	modules_.RouteMsg(msg->get_payload());
-    //input_queue.wr(const_cast<std::string&>(msg->get_payload()));
-
-    /* Parse data:
-     * Remove Module's prefix/name and then route message into selected module */
-
-
 
 }

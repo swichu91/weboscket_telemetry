@@ -30,12 +30,19 @@ void TempTest::MainThread_(TelemetryServer* inst){
     		InvokeHandlers(ret);
     	}
 
+        /*std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        boost::this_thread::sleep(boost::posix_time::milliseconds(1));
-        std::stringstream ss;
-        ss << cnt++;
-        std::string str = "testowy msg" + ss.str();
-        inst->SendMsg(str);
+        std::string str = "testowy msg" + std::to_string(cnt++);
+
+        std::pair<std::string,std::string> temp;
+
+        temp.first = "T1";
+        temp.second = "25,4C";
+
+        cmd_vect cmd_vect;
+        cmd_vect.push_back(temp);
+
+        SendMsg(name_,cmd_vect);*/
     }
 
 }

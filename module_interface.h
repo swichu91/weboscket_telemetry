@@ -10,7 +10,8 @@
 
 class ModuleInterface
 {
-	enum{TOKEN_CMD=1,TOKEN_VAL=2};
+    /* TODO: support for bounding 2 args into one cmd*/
+	enum{TOKEN_CMD=1,TOKEN_VAL1=2,TOKEN_VAL2=3};
 
 protected:
     TelemetryServer* inst_;
@@ -37,7 +38,7 @@ protected:
 
                  if(pcnt == TOKEN_CMD){
                      temp_pair.first = *it1;
-                 }else if(pcnt == TOKEN_VAL){
+                 }else if(pcnt == TOKEN_VAL1){
                      temp_pair.second = *it1;
                  }
                  ++pcnt;
@@ -53,22 +54,26 @@ protected:
 
     }
 
-    /** Message format: 'Module name+arg1:val1,Module name+arg2:val2 and so on */
-    virtual void BuildMsg() =0;
-
-    void SendMsg(std::string& msg){
-        inst_->SendMsg(msg);
-    }
-
-public:
     ModuleInterface(TelemetryServer* inst){
         inst_ =inst;
     }
 
-    virtual ~ModuleInterface(){};
+    /** Message format: 'Module name_arg1:val1,Module name_arg2:val2 and so on */
+    void SendMsg(const std::string& name,cmd_vect& vect){
+        std::string cmd_string;
 
+        for(auto i: vect){
+            cmd_string += name + "_" + i.first + ":" + i.second + ",";
+        }
+
+        inst_->SendMsg(cmd_string);
+    }
+
+    /** Start specific module thread */
     virtual void run() =0;
 
+    /** Virtual destructor */
+    virtual ~ModuleInterface(){};
 
 };
 
