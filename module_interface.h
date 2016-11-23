@@ -65,7 +65,7 @@ protected:
         for(auto i: vect){
             cmd_string += name + "_" + i.first + ":" + i.second + ",";
         }
-        std::cout << "Msg: " + cmd_string + "sent" << std::endl;
+        std::cout << "Msg sent: " + cmd_string << std::endl;
 
         inst_->SendMsg(cmd_string);
     }

@@ -80,9 +80,17 @@ public:
     	it = modules_.find(strs[0]);
     	/* 0 element contains name od module */
     	if(it != modules_.end()){
-    		/* Ok, msg can be passed to module cause it's been already loaded */
-    		std::cout << "Msg: " << strs[1] <<" passed to module: " << strs[0] << std::endl;
-    		modules_[strs[0]]->wr(strs[1]);
+
+    		/* Only accepted format is: 'module_name':msg */
+    		if(strs.size() == 2){
+        		/* Ok, msg can be passed to module cause it's been already loaded */
+        		std::cout << "Msg: " << strs[1] <<" passed to module: " << strs[0] << std::endl;
+        		modules_[strs[0]]->wr(strs[1]);
+    		}else{
+    			/* Missing colon after module_name. Silently ignore this request.*/
+    			std::cout << "Wrong request forat: Missing colon after module_name!" << std::endl;
+    		}
+
     	}else{
     		//TODO: silently ignore this request
     		std::cout << "Module:" << strs[0] << " not found !" << std::endl;

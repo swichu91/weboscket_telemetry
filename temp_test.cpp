@@ -21,7 +21,7 @@ void TempTest::MainThread_(TelemetryServer* inst){
     		InvokeHandlers(name_,ret);
     	}
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
         std::string str = "testowy msg" + std::to_string(cnt++);
 
