@@ -69,9 +69,6 @@ protected:
         inst_->SendMsg(cmd_string);
     }
 
-    /** Start specific module thread */
-    virtual void run() =0;
-
     /** Virtual destructor */
     virtual ~ModuleInterface(){};
 

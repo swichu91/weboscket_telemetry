@@ -11,22 +11,32 @@
 class TempTest  : public ModuleInterface, public Opcodes {
 
 public:
+
+    /* Worker thread will be called as soon as class is created */
     TempTest(std::string& name,TelemetryServer* inst): ModuleInterface(inst) {
         name_ = name;
         inst_=inst;
         queue_ = std::make_shared<MsgQueue<std::string>>();
+
         inst_->RegisterModule(const_cast<std::string&>(name_),queue_);
+
+        worker_thread_ = std::thread{MainThread_,this,inst_};
     }
-    ~TempTest();
+    ~TempTest(){
+        stop_thread_ = true;
+        if(worker_thread_.joinable()){
+            worker_thread_.join();
+        }
+    }
 
-    /* Methods below are pure virtual and need to be implemented */
-    void run();
-
+    /* Virtual methods below.. */
     ret Handler_Data_Req(handler_param){return Cmd_Executed;}
     ret Handler_Data_Cyclic(handler_param){return Cmd_Executed;}
     ret Handler_Stop(handler_param){return Cmd_Executed;}
 
 private:
+    bool stop_thread_ = false;
+    std::thread worker_thread_;
     std::string name_;
     std::shared_ptr<MsgQueue<std::string>> queue_;
     void MainThread_(TelemetryServer* inst);
