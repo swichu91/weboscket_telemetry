@@ -53,10 +53,6 @@ int main(int argc, char** argv) {
 
     std::string module1 = "tempm";
     TempTest temptest(module1,&s);
-    //temptest.run();
-
-   // boost::scoped_thread<> mod1_thread{boost::thread{module1,&s}};
-    //boost::scoped_thread<> mod2_thread{boost::thread{module2,&s}};
 
     s.run("", port_nr);
 

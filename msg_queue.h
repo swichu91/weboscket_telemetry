@@ -34,7 +34,7 @@ public:
 		data_queue.pop_back();
 		return temp;
 	}
-	/* Non blocking call. It return void element on timeout */
+	/* Non blocking call. It returns empty element on timeout */
     T rd(const std::chrono::milliseconds& timeout){
         T temp;
 

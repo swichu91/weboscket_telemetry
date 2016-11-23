@@ -18,7 +18,7 @@ void TempTest::MainThread_(TelemetryServer* inst){
 
     	if(test != ""){
     	    cmd_vect ret = ParseMsg(test);
-    		InvokeHandlers(ret);
+    		InvokeHandlers(name_,ret);
     	}
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
