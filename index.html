@@ -38,7 +38,8 @@ function connect() {
 	};
 	
 	ws.onmessage = function(e) {
-		document.getElementById("output_view_id").value = e.data;
+		//document.getElementById("output_view_id").value = e.data;
+		document.getElementById("messages").innerHTML += e.data + "<br/>";
 	};
 }
 
@@ -69,6 +70,7 @@ function send_msg() {
 body,html {
 	margin: 0px;
 	padding: 0px;
+	overflow:auto;
 }
 #controls {
 	float:right;

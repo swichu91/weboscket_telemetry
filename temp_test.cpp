@@ -27,6 +27,9 @@ void TempTest::MainThread_(TelemetryServer* inst){
 
         cmd_vect cmd_vect;
         cmd_vect.push_back(std::make_pair("T1","25,4C"));
+        cmd_vect.push_back(std::make_pair("T2","23,4C"));
+        cmd_vect.push_back(std::make_pair("T3","22,4C"));
+        cmd_vect.push_back(std::make_pair("T4","21,4C"));
 
         SendMsg(name_,cmd_vect);
     }

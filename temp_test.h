@@ -33,6 +33,7 @@ public:
     ret Handler_Data_Req(handler_param){return Cmd_Executed;}
     ret Handler_Data_Cyclic(handler_param){return Cmd_Executed;}
     ret Handler_Stop(handler_param){return Cmd_Executed;}
+    ret Handler_Mod_Specific(handler_param){return Cmd_Executed;}
 
 private:
     bool stop_thread_ = false;

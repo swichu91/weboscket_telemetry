@@ -21,9 +21,10 @@
 #include <sstream>
 
 #include <boost/thread.hpp>
+
+#include "moduleParser.h"
 #include "msg_queue.h"
 
-#include "modules.h"
 
 /**
  * The telemetry server accepts connections and sends a message every second to
@@ -68,7 +69,7 @@ public:
     void SendMsg(std::string&);
 
     /* Register module and corresponding queue */
-    Modules::mod_ret RegisterModule(const std::string& s, module_ptr msgq){
+    ModuleParser::mod_ret RegisterModule(const std::string& s, module_ptr msgq){
         std::cout << "Module: " << s << " registered!" << std::endl;
        return modules_.Register(s,msgq);
     }
@@ -78,7 +79,7 @@ public:
 private:
 
     /* Private module wrappers */
-    Modules::mod_ret UnregisterAll(){
+    ModuleParser::mod_ret UnregisterAll(){
        return modules_.UnregisterAll();
     }
 
@@ -96,7 +97,7 @@ private:
 
     void on_message(connection_hdl hdl, message_ptr msg);
 
-    Modules modules_;
+    ModuleParser modules_;
     server m_endpoint;
     con_list m_connections;
     server::timer_ptr m_timer;

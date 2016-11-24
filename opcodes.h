@@ -27,6 +27,9 @@ public:
 		Code_Data_Cyclic = 1,/* Synchronous data request*/
 		Code_Stop = 2, /* Put module into silent mode(it won't send any data to webserver)*/
 
+		/* .. */
+		Code_Mod_Specific =66, /* Pass module specific commands into corresponding module */
+
 		/* TBD */
 	} opcodes;
 
@@ -59,6 +62,7 @@ public:
 	virtual ret Handler_Data_Req(handler_param){return Cmd_Not_Implemented;}
 	virtual ret Handler_Data_Cyclic(handler_param){return Cmd_Not_Implemented;}
 	virtual ret Handler_Stop(handler_param){return Cmd_Not_Implemented;}
+	virtual ret Handler_Mod_Specific(handler_param){return Cmd_Not_Implemented;}
 
 	virtual ~Opcodes(){};
 
@@ -74,6 +78,9 @@ public:
                 break;
             case Code_Data_Cyclic:
                 std::cout << RetToStr(name,Handler_Data_Cyclic(std::stoi(i.second,nullptr,10)));
+                break;
+            case Code_Mod_Specific:
+                std::cout << RetToStr(name,Handler_Mod_Specific(std::stoi(i.second,nullptr,10)));
                 break;
             default:
                 std::cout << RetToStr(name,Cmd_Not_Found);

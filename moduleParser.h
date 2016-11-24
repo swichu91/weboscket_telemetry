@@ -8,7 +8,7 @@
 
 typedef std::shared_ptr<MsgQueue<std::string>> module_ptr;
 
-class Modules
+class ModuleParser
 {
     typedef std::map<std::string,module_ptr>  module;
     module modules_;
@@ -22,8 +22,8 @@ public:
         NOT_FOUND = -2
     }mod_ret;
 
-    Modules(){};
-    ~Modules(){};
+    ModuleParser(){};
+    ~ModuleParser(){};
 
     mod_ret Register(const std::string& s,module_ptr msgq){
 
@@ -88,7 +88,7 @@ public:
         		modules_[strs[0]]->wr(strs[1]);
     		}else{
     			/* Missing colon after module_name. Silently ignore this request.*/
-    			std::cout << "Wrong request forat: Missing colon after module_name!" << std::endl;
+    			std::cout << "Wrong request format: Missing colon after module_name!" << std::endl;
     		}
 
     	}else{
