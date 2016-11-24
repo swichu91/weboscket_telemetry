@@ -1,10 +1,5 @@
 
-#include "temp_test.h"
-/*
-#include "module_interface.h"
-#include "telemetry_server.h"
-#include <iostream>
-*/
+#include "tempsensors_mod.h"
 
 #include <sstream>
 #include <thread>

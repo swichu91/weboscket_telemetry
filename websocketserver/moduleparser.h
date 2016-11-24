@@ -4,7 +4,8 @@
 #include <thread>
 #include <mutex>
 #include <boost/algorithm/string.hpp>
-#include "msg_queue.h"
+
+#include "msgqueue.h"
 
 typedef std::shared_ptr<MsgQueue<std::string>> module_ptr;
 

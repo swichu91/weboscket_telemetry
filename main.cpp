@@ -7,15 +7,10 @@
 
 
 #include <iostream>
-#include <boost/bind.hpp>
-#include "wire_sensors.h"
-#include "telemetry_server.h"
-/* For getopt */
 #include <unistd.h>
-#include <boost/thread.hpp>
-#include <boost/smart_ptr/scoped_ptr.hpp>
 
-#include "temp_test.h"
+#include "tempsensors_mod/tempsensors_mod.h"
+#include "websocketserver/websocketserver.h"
 
 
 using namespace std;
@@ -26,7 +21,7 @@ void print_usage()
     cout << "       w <threads number>" << endl;
 }
 
-#include "msg_queue.h"
+#include "websocketserver/msgqueue.h"
 
 int main(int argc, char** argv) {
 

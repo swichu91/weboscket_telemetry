@@ -22,8 +22,8 @@
 
 #include <boost/thread.hpp>
 
-#include "moduleParser.h"
-#include "msg_queue.h"
+#include "moduleparser.h"
+#include "msgqueue.h"
 
 
 /**

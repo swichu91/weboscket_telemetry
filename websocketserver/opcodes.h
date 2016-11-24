@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 typedef std::vector<std::pair<std::string,std::string>> cmd_vect;
 

@@ -2,11 +2,12 @@
 #ifndef MODULE_INTERFACE_H_
 #define MODULE_INTERFACE_H_
 
-#include "msg_queue.h"
-#include "telemetry_server.h"
 #include "opcodes.h"
 #include <iostream>
 #include <boost/tokenizer.hpp>
+
+#include "msgqueue.h"
+#include "websocketserver.h"
 
 class ModuleInterface
 {

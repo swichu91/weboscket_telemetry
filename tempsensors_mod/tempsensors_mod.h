@@ -4,9 +4,10 @@
 #define TEMP_TEST_H_
 
 #include <iostream>
-#include "module_interface.h"
-#include "telemetry_server.h"
 #include <thread>
+
+#include "../websocketserver/modinterface.h"
+#include "../websocketserver/websocketserver.h"
 
 class TempTest  : public ModuleInterface, public Opcodes {
 
