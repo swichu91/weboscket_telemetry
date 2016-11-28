@@ -5,64 +5,56 @@
 </head>
 <body>
 
-<script type="text/javascript">
-var ws;
-var url;
+<script src="socket.js" ></script>
 
-function connect() {
-	url = document.getElementById("server_url").value;
-	
-	if ("WebSocket" in window) {
-		ws = new WebSocket(url);
-	} else if ("MozWebSocket" in window) {
-		ws = new MozWebSocket(url);
-	} else {
-		document.getElementById("messages").innerHTML += "This Browser does not support WebSockets<br />";
-		return;
-	}
-	ws.onopen = function(e) {
-		document.getElementById("messages").innerHTML += "Client: A connection to "+ws.url+" has been opened.<br />";
-		
-		document.getElementById("server_url").disabled = true;
-		document.getElementById("toggle_connect").innerHTML = "Disconnect";
-	};
-	
-	ws.onerror = function(e) {
-		document.getElementById("messages").innerHTML += "Client: An error occured, see console log for more details.<br />";
-		console.log(e);
-	};
-	
-	ws.onclose = function(e) {
-		document.getElementById("messages").innerHTML += "Client: The connection to "+url+" was closed. ["+e.code+(e.reason != "" ? ","+e.reason : "")+"]<br />";
-	    cleanup_disconnect();
-	};
-	
-	ws.onmessage = function(e) {
-		//document.getElementById("output_view_id").value = e.data;
-		document.getElementById("messages").innerHTML += e.data + "<br/>";
-	};
-}
+<script>
 
-function disconnect() {
-	ws.close();
-	cleanup_disconnect();
-}
+function OnCloseHandler(e) {
+	document.getElementById("messages").innerHTML += "Client: The connection to "+socket.url()+" was closed. ["+e.code+(e.reason != "" ? ","+e.reason : "")+"]<br />";
+	//cleanup_disconnect();
+};
 
-function cleanup_disconnect() {
-    document.getElementById("server_url").disabled = false;
-	document.getElementById("toggle_connect").innerHTML = "Connect";
-}
+function OnErrorHandler(e) {
+	document.getElementById("messages").innerHTML += "Client: An error occured, see console log for more details.<br />";
+	console.log(e);
+};
+
+function OnOpenHandler(e) {
+	document.getElementById("messages").innerHTML += "Client: A connection to "+socket.url()+" has been opened.<br />";
+	
+	document.getElementById("server_url").disabled = true;
+	document.getElementById("toggle_connect").innerHTML = "Disconnect";
+};
+
+function OnMsgHandler(e) {
+	//document.getElementById("output_view_id").value = e.data;
+	document.getElementById("messages").innerHTML += e.data + "<br/>";
+};
+
 
 function toggle_connect() {
 	if (document.getElementById("server_url").disabled === false) {
-		connect();
+			
+		socket.connect(document.getElementById("server_url").value);
+		
+		socket.registerOnClose(OnCloseHandler);
+		socket.registerOnOpen(OnOpenHandler);
+		socket.registerOnError(OnErrorHandler);
+		socket.registerOnMsg(OnMsgHandler);
+		
+		
 	} else {
-		disconnect();
+		socket.disconnect();
+		document.getElementById("server_url").disabled = false;
+		document.getElementById("toggle_connect").innerHTML = "Connect";
 	}
 }
-function send_msg() {
-	ws.send(document.getElementById("message_text_id").value);
+
+function send_msg(){
+	//document.getElementById("toggle_connect").innerHTML = socket.url();
+	socket.emit("tempm",socketOpModSpecific,"555");
 }
+
 
 </script>
 
@@ -79,7 +71,7 @@ body,html {
 
 </style>
 
-<div id="controls">
+<div id="controls" onload="myFunction()">
 	<div id="server">
 	<input type="text" name="server_url" id="server_url" value="ws://localhost:55555" /><br />
 	<button id="toggle_connect" onclick="toggle_connect();">Connect</button><br />
