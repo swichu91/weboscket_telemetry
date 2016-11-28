@@ -1,4 +1,5 @@
 
+/* THIS IS LIST OF COMMANDS CURRENTLY SUPPORTED BY WEBSOCKET SERVER */
 socketOpDataReq = "0";
 socketOpDataCyclic = "1";
 socketOpStop = "2";
