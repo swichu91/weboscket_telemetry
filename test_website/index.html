@@ -50,12 +50,12 @@ function toggle_connect() {
 		socket.registerOnOpen(OnOpenHandler);
 		socket.registerOnError(OnErrorHandler);
 		socket.registerOnMsg(OnMsgHandler);
-		document.getElementById("toggle_connect").name = "Disconnect";
+		document.getElementById("toggle_connect").innerHTML = "Disconnect";
 		
 	} else {
 		socket.disconnect();
 		document.getElementById("server_url").disabled = false;
-		document.getElementById("toggle_connect").name = "Connect";
+		document.getElementById("toggle_connect").innerHTML = "Connect";
 	}
 }
 
@@ -87,7 +87,7 @@ body,html {
 	<div id="controls" onload="myFunction()">
 		<div id="server">
 			<input type="text" name="server_url" id="server_url" value="ws://localhost:55555" /><br />
-			<button id="toggle_connect" onclick="toggle_connect();">Connect</button><br />
+			<button id="toggle_connect" onclick="toggle_connect(this.id);">Connect</button><br />
 			<input type="text" name="message_text" id="message_text_id" value="Test" /><br />
 			<button id="send_msg" onclick="send_msg();">SendMsg</button>
 		</div>
