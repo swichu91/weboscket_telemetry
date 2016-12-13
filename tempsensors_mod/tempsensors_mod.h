@@ -21,7 +21,7 @@ public:
 
         inst_->RegisterModule(const_cast<std::string&>(name_),queue_);
 
-        worker_thread_ = std::thread{MainThread_,this,inst_};
+        worker_thread_ = std::thread(&TempTest::MainThread_,this,inst_);
     }
     ~TempTest(){
         stop_thread_ = true;
@@ -31,10 +31,10 @@ public:
     }
 
     /* Virtual methods below.. */
-    ret Handler_Data_Req(handler_param){return Cmd_Executed;}
-    ret Handler_Data_Cyclic(handler_param){return Cmd_Executed;}
-    ret Handler_Stop(handler_param){return Cmd_Executed;}
-    ret Handler_Mod_Specific(handler_param){return Cmd_Executed;}
+    ret Handler_Data_Req(handler_param);
+    ret Handler_Data_Cyclic(handler_param);
+    ret Handler_Stop(handler_param);
+    ret Handler_Mod_Specific(handler_param);
 
 private:
     bool stop_thread_ = false;
@@ -42,6 +42,8 @@ private:
     std::string name_;
     std::shared_ptr<MsgQueue<std::string>> queue_;
     void MainThread_(TelemetryServer* inst);
+
+    bool cyclic_data_ = false;
 };
 
 #endif /*TEMP_TEST */

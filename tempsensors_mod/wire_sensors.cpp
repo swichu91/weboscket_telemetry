@@ -80,8 +80,7 @@ void WireSensors::PerformTempRead() {
             temp_token.resize(temp_token.size() - 1);
 
             (*it).temp_str = temp_token;
-            //(*it).temp = stof(temp_token);
-
+            (*it).temp = stof(temp_token);
             file.close();
 
 
