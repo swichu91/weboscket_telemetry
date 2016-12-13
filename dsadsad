@@ -1,0 +1,27 @@
+[33m7ed7766[m HEAD@{0}: commit: asdfasdf
+[33m8bcd700[m HEAD@{1}: checkout: moving from b332f8a044fb1bd4f864bbf8f2fbc38ca2507e29 to master
+[33mb332f8a[m HEAD@{2}: commit (merge): Merge remote-tracking branch 'remote/master' into HEAD
+[33ma7a308d[m HEAD@{3}: commit: sdasd
+[33me39c3c3[m HEAD@{4}: checkout: moving from master to e39c3c361b4717baf556fdc3967c83f4f7186f9f
+[33m8bcd700[m HEAD@{5}: pull --progress remote: Fast-forward
+[33m2c0e79d[m HEAD@{6}: commit: reorganize folder structure
+[33m85739de[m HEAD@{7}: merge branch 'master' of https://github.com/swichu91/weboscket_telemetry: Fast-forward
+[33maa5f14e[m HEAD@{8}: commit: minor fix in module.h
+[33m7f1bd0c[m HEAD@{9}: pull --progress remote: Fast-forward
+[33m1932fee[m HEAD@{10}: commit: switching from boost to STL 
+[33mc0335ec[m HEAD@{11}: pull --progress remote: Fast-forward
+[33m73fdb41[m HEAD@{12}: commit: add opcodes class and parsing queries
+[33mf85cd2e[m HEAD@{13}: pull --progress remote: Fast-forward
+[33m0cda1c9[m HEAD@{14}: commit: commit
+[33m1e19b40[m HEAD@{15}: checkout: moving from 305ad3abbae92b96341d03fc346ea6c00b187ce3 to master
+[33m305ad3a[m HEAD@{16}: checkout: moving from master to 305ad3abbae92b96341d03fc346ea6c00b187ce3
+[33m1e19b40[m HEAD@{17}: checkout: moving from master to master
+[33m1e19b40[m HEAD@{18}: branch: Reset to remote/master
+[33m305ad3a[m HEAD@{19}: pull --progress remote: Fast-forward
+[33mf4156f9[m HEAD@{20}: commit: sync commit
+[33m271a9a9[m HEAD@{21}: pull --progress remote +refs/heads/master:refs/remotes/remote/master: Fast-forward
+[33m11fdb3c[m HEAD@{22}: commit: add worker threads
+[33mdfc5af2[m HEAD@{23}: pull --progress https://github.com/swichu91/weboscket_telemetry: Fast-forward
+[33m876267b[m HEAD@{24}: commit: fixed compilation errors
+[33m661417f[m HEAD@{25}: pull --progress https://github.com/swichu91/weboscket_telemetry +refs/heads/master:refs/heads/master: fast-forward
+[33mc02eb09[m HEAD@{26}: commit (initial): first commit
