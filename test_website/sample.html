@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+<head>
+	<script type="text/javascript" src="http://cdn.webix.com/edge/webix.js"></script>
+	<link rel="stylesheet" type="text/css" href="http://cdn.webix.com/edge/webix.css">
+
+	<script type="text/javascript" src="./sidebar.js"></script>
+	<link rel="stylesheet" type="text/css" href="./sidebar.css">
+
+	<script type="text/javascript" src="./data/data.js"></script>
+	<script src="https://use.fontawesome.com/2d37f8b956.js"></script>
+	<style>
+		.app_button button{
+			padding:0;
+			text-align: center;
+		}
+
+	</style>
+</head>
+<body>
+	
+
+<script type="text/javascript">
+	
+	var active_form_ID = 'connectionID';
+	var host = "localhost:5555";
+	
+	
+	/* SIDEBAR DATA */
+	
+	menu_data = [
+
+		{id: "tempsensors", icon: "thermometer-full", value:"Temperature"},
+		{id: "tempcharts", icon: "line-chart", value:"Temperature charts"},
+		{id: "LEDs", icon: "lightbulb-o", value:"LEDs"},
+		
+		{id: "Connection", icon: "bolt", value:"Connection", data:[
+
+			{id: "conn_button",view:"button", value:"Connect..", type: "icon", width: 45, css: "app_button", icon: "envelope-o", click: function(id){
+									webix.message("dawaj naliwaj")
+								}},
+								
+			{id: "disconnect_button", view: "button", value:"Disconnect", type: "icon", width: 45, css: "app_button", icon: "envelope-o",},
+
+
+		]},
+		{id: "Refreshtest", icon: "lightbulb-o", value:"RefreshTest"}
+		
+	]
+	
+	var myconn = webix.ui({
+    view:"form", 
+    id:"log_form",
+    width:300,
+    position:"center",
+    elements:[
+        { view:"text", label:"Email"},
+        { view:"text", type:"password", label:"Password"},
+        { margin:5, cols:[
+            { view:"button", value:"Login" , type:"form" },
+            { view:"button", value:"Cancel" }
+        ]}
+        ]
+    }).hide();
+    
+    
+    
+    
+	var formLED = {
+			id:'ledID',
+		 view: "label", label: "coming soon..."
+	};
+    
+    function rebuildFormLED(){
+		
+        webix.ui(formLED,$$(active_form_ID));
+        active_form_ID = 'ledID';
+    }
+    
+    
+    
+    
+    
+    var formChart = {
+			width:600,
+			height:400,
+            id: "chartID",
+            view:"chart",
+            //container: "chart_div",
+            type:"line",
+            value:"#yValue#",
+            cellWidth: 50,
+            dynamic: true,
+            label: function(obj){
+                return parseInt(obj.yValue,10);
+            },
+            item:{
+                borderColor: "#1293f8",
+                color: "#ffffff"
+            },
+            line:{
+                color:"#1293f8",
+                width:3
+            },
+            xAxis:{
+                template:"#xValue#"
+            },
+            yAxis:{
+                start:0,
+                end:100,
+                step:10,
+                template:function(obj){
+                    return (obj%50?"":obj);
+                }
+            },
+            series:[
+                {
+                    value:"#yValue#",
+                    item:{
+                        borderColor: "#1293f8",
+                        color: "#ffffff"
+                    },
+                    line:{
+                        color:"#1293f8",
+                        width:2
+                    },
+                    tooltip:{
+                        template:"#yValue#"
+                    }
+                }
+            ]
+        };
+      
+    function rebuildFormTempChart(){
+		
+        webix.ui(formChart,$$(active_form_ID));
+        active_form_ID = 'chartID';
+    }
+	
+	
+	
+	var formDataTableHandle;
+	var formDataTable = {
+			id: 'datatableID',
+			view:'datatable',
+			width:300,
+			scroll:false,
+			autoheight:true,
+			columns:[
+				{id:"sensid", header:"Sensor ID", width:200},
+				{id:"temp", header:"Temp[C]", fillspace:true},
+
+			],
+			data:[
+				{id:1, sensid:"12345",temp:"25,4"},
+				{id:2, sensid:"54321",temp:"23,7"},
+			]
+        };
+	
+	
+	function rebuildFormDataTable(){
+		
+        formDataTableHandle=webix.ui(formDataTable,$$(active_form_ID));
+        active_form_ID = 'datatableID';
+    }
+	
+	
+	function ConnectToWebserver(){
+		host=$$("servhost").getValue();
+		webix.message("Connecting to webserver..." + host);
+	}
+	
+	var formConnectionHandle;
+	var formConnection = {
+			id: 'connectionID',
+            view:"form",
+			width: 400, height:300,
+			elements:[
+				{view:"text",id:"servhost", placeholder:"Server address.."},
+				{view:"button", value:"Connect", type:"form", click:ConnectToWebserver}
+			]
+        }
+	
+    function rebuildFormConnection(){
+		
+        formConnectionHandle = webix.ui(formConnection,$$(active_form_ID));
+        active_form_ID = 'connectionID';
+    }
+    
+        function rebuildFormDisconnect(){
+        webix.ui({
+			id:'disconnectID',
+            view:"form",
+			width: 400, height:300,
+			elements:[
+				{view:"text", placeholder:"Server address.."},
+				{view:"text", placeholder:"Server address.."},
+				{cols:[
+					{view:"button", value:"Cancel"},
+					{view:"button", value:"Connect", type:"form"}
+				]}
+			]
+        },$$(active_form_ID));
+        
+        active_form_ID = 'disconnectID';
+    }
+    
+	webix.ready(function(){
+		webix.ui({
+			id:"main_window",
+			width:3000,
+			rows: [
+				{   view: "toolbar", padding:3, elements: [
+					{view: "button", type: "icon", icon: "bars",
+						width: 37, align: "left", css: "app_button", click: function(){
+							$$("$sidebar1").toggle()
+						}
+					},
+					{ view: "label", label: "BeagleBone Server"},
+					{},
+				]
+				},
+				{
+					id:"center_window",
+					cols:[
+						{
+							width:200,
+							height: 400,
+							view: "sidebar",
+							data: menu_data,
+							on:{
+								onAfterSelect: function(id){
+									webix.message("Selected: "+this.getItem(id).value)
+									
+									if(id == "conn_button"){
+										webix.message("clicked connect");
+										rebuildFormConnection();
+									}else if (id == "disconnect_button"){
+										webix.message("clicked disconnect");
+										/* Disconnect from webservermethod here */
+
+									}else if(id == "tempsensors"){
+										rebuildFormDataTable();
+									}else if(id == "tempcharts"){
+										rebuildFormTempChart();
+									}else if(id == "LEDs"){
+										rebuildFormLED();
+									}else if(id == "Refreshtest"){
+										record = formDataTableHandle.getItem(1);
+										record["temp"] = Math.random().toString(36).substr(2, 5);
+									}
+									
+								}
+							}
+						},
+						{
+							id:"connectionID",
+							template:"Please use menu on the left"
+						}
+					]
+				}
+			]
+		});
+
+
+	});
+</script>
+</body>
+</html>

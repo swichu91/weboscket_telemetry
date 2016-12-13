@@ -14,32 +14,33 @@
 
 typedef std::vector<std::pair<std::string,std::string>> cmd_vect;
 
+
+/* Opcodes*/
+typedef enum{
+
+	Code_Data_Req = 0,/* Asynchronous data request*/
+	Code_Data_Cyclic = 1,/* Synchronous data request*/
+	Code_Stop = 2, /* Put module into silent mode(it won't send any data to webserver)*/
+
+	/* .. */
+	Code_Mod_Specific =66, /* Pass module specific commands into corresponding module */
+
+	/* TBD */
+} opcodes;
+
+typedef enum{
+	Cmd_Not_Found = 0,
+	Cmd_Executed = 1,
+	Cmd_Error = 2,
+	Cmd_Not_Implemented = 3,
+}ret;
+
 class Opcodes
 {
 public:
 
 	typedef int handler_param;
 
-
-	/* Opcodes*/
-	typedef enum{
-
-		Code_Data_Req = 0,/* Asynchronous data request*/
-		Code_Data_Cyclic = 1,/* Synchronous data request*/
-		Code_Stop = 2, /* Put module into silent mode(it won't send any data to webserver)*/
-
-		/* .. */
-		Code_Mod_Specific =66, /* Pass module specific commands into corresponding module */
-
-		/* TBD */
-	} opcodes;
-
-	typedef enum{
-		Cmd_Not_Found = 0,
-		Cmd_Executed = 1,
-		Cmd_Error = 2,
-		Cmd_Not_Implemented = 3,
-	}ret;
 
 private:
     std::string RetToStr(std::string& name,ret r){
@@ -82,6 +83,9 @@ public:
                 break;
             case Code_Mod_Specific:
                 std::cout << RetToStr(name,Handler_Mod_Specific(std::stoi(i.second,nullptr,10)));
+                break;
+            case Code_Stop:
+                std::cout << RetToStr(name,Handler_Stop(std::stoi(i.second,nullptr,10)));
                 break;
             default:
                 std::cout << RetToStr(name,Cmd_Not_Found);
