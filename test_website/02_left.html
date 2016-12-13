@@ -23,11 +23,40 @@
 
 <script type="text/javascript" charset="utf-8">
 	webix.ready(function(){
+		webix.ui({
+			rows:[
+				{
+					view: "toolbar", id:"toolbar", elements:[
+					{
+						view: "icon", icon: "bars",
+						click: function(){
+							if( $$("menu").config.hidden){
+								$$("menu").show();
+							}
+							else
+								$$("menu").hide();
+						}
+					},
+					{
+						view: "label",
+						label: "Beaglebone Server"
+					}
+
+				]
+				},
+				{
+				function(){$$("chart").show();}
+				
+				}
+					//empty field
+			]
+		});
+
 		
 		/* DYNAMIC CHART */ 
-		var dynchart = {
-		    width:1200,
-			height:800,
+		webix.ui({
+		    width:400,
+			height:200,
             id: "chart",
             view:"chart",
             //container: "chart_div",
@@ -73,49 +102,10 @@
                     }
                 }
             ]
-        };
-		
-		/* MAIN LAYOUT */
-		webix.ui({
-			id:"main_layout",
-			view:"layout",
-			rows:[
-				{
-					view: "toolbar", id:"toolbar", elements:[
-					{
-						view: "icon", icon: "bars",
-						click: function(){
-							if( $$("menu").config.hidden){
-								$$("menu").show();
-							}
-							else
-								$$("menu").hide();
-						}
-					},
-					{
-						view: "label",
-						label: "Beaglebone Server"
-					}
-
-				]
-				},
-				{
-					cols:[
-						{},
-						dynchart,
-				
-					]
-				
-				}
-					//empty field
-			]
-		});
-
-		
-
+        });
 		
 		/* POPUP Connection */
-		var mypopup ={
+		webix.ui({
 		   view:"popup",
 		   id:"popup_conn",
 		   body:{
@@ -126,11 +116,11 @@
 				{ view:"button", value:"Cancel" }
 			]
 				}
-		};
+		}).hide();
 		
 		/* SIDE MENU */
 		webix.ui({
-			view: "sidebar",
+			view: "sidemenu",
 			id: "menu",
 			width: 200,
 			position: "left",
@@ -151,16 +141,8 @@
 					{id: 1, value: "Temp sensors", icon: "thermometer-full"},
 					{id: 2, value: "Temp charts", icon: "line-chart"},
 					{id: 3, value: "LEDs", icon: "lightbulb-o"},
-					{id: 4, value: "Connection", icon: "bolt"},
+					{id: 4, value: "Connection", icon: "bolt", click:"popup_conn"},
 				],
-											on:{
-								onAfterSelect: function(id){
-									
-									if(id==4){
-										$$("main_layout").show();
-									}
-								}
-							},
 				select:true,
 				type:{
 					height: 40
@@ -169,7 +151,7 @@
 
 			
 
-		}).show();
+		});
 		
 	});
 
